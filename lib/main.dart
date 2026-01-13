@@ -11,9 +11,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Andru calculadora',
+      title: 'Andru Calculadora',
       theme: ThemeData(
-        colorScheme: .fromSeed(
+        colorScheme: ColorScheme.fromSeed(
           seedColor: const Color.fromARGB(255, 66, 224, 187),
         ),
       ),
@@ -32,8 +32,56 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  void _incrementCounter() {
-    setState(() {});
+  final TextEditingController _ctrlDisplay = TextEditingController(text: "");
+  double aux1 = 0;
+  double aux2 = 0;
+  String operacion = "";
+
+  void setAux1(String sim) {
+    operacion = sim;
+    aux1 = double.parse(_ctrlDisplay.text);
+    _ctrlDisplay.text = "";
+  }
+
+  void setAux2() {
+    aux2 = double.parse(_ctrlDisplay.text);
+    _ctrlDisplay.text = "";
+  }
+
+  void calcular() {
+    double resultado = 0;
+    if (operacion == "+") {
+      resultado = aux1 + aux2;
+    } else if (operacion == "-") {
+      resultado = aux1 - aux2;
+    } else if (operacion == "*") {
+      resultado = aux1 * aux2;
+    } else if (operacion == "/") {
+      if (aux2 != 0) {
+        resultado = aux1 / aux2;
+      } else {
+        resultado = double.nan; // Para evitar división por cero
+      }
+    }
+    _ctrlDisplay.text = "${resultado}";
+  }
+
+  // Funciones para manejar los botones 'C' y 'CE'
+  void clearAll() {
+    setState(() {
+      _ctrlDisplay.text = "";
+      aux1 = 0;
+      aux2 = 0;
+      operacion = "";
+    });
+  }
+
+  void clearLastEntry() {
+    setState(() {
+      _ctrlDisplay.text = _ctrlDisplay.text.isNotEmpty
+          ? _ctrlDisplay.text.substring(0, _ctrlDisplay.text.length - 1)
+          : "";
+    });
   }
 
   @override
@@ -46,13 +94,28 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         child: Column(
           children: [
-            Text("1"),
-            Text("2"),
+            TextField(
+              controller: _ctrlDisplay,
+              decoration: InputDecoration(labelText: ''),
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 34),
+            ),
             Row(
               children: [
-                BtnDark(simbolo: "%"),
-                BtnDark(simbolo: "CE"),
-                BtnDark(simbolo: "C"),
+                BtnDark(
+                  simbolo: "%",
+                  onClick:
+                      () {}, // Puedes agregar una función para el botón de porcentaje si deseas
+                ),
+                BtnDark(
+                  simbolo: "CE",
+                  onClick:
+                      clearLastEntry, // Elimina el último carácter ingresado
+                ),
+                BtnDark(
+                  simbolo: "C",
+                  onClick: clearAll, // Elimina todo
+                ),
               ],
             ),
             Row(
@@ -60,19 +123,25 @@ class _MyHomePageState extends State<MyHomePage> {
                 BtnLight(
                   numero: "1",
                   onClick: (String numero) {
-                    print("Main: $numero");
+                    _ctrlDisplay.text = "${_ctrlDisplay.text}1";
                   },
                 ),
                 BtnLight(
                   numero: "2",
                   onClick: (String numero) {
-                    print("Main: $numero");
+                    _ctrlDisplay.text = "${_ctrlDisplay.text}2";
                   },
                 ),
                 BtnLight(
                   numero: "3",
                   onClick: (String numero) {
-                    print("Main: $numero");
+                    _ctrlDisplay.text = "${_ctrlDisplay.text}3";
+                  },
+                ),
+                BtnDark(
+                  simbolo: "+",
+                  onClick: () {
+                    setAux1("+");
                   },
                 ),
               ],
@@ -82,19 +151,25 @@ class _MyHomePageState extends State<MyHomePage> {
                 BtnLight(
                   numero: "4",
                   onClick: (String numero) {
-                    print("Main: $numero");
+                    _ctrlDisplay.text = "${_ctrlDisplay.text}4";
                   },
                 ),
                 BtnLight(
                   numero: "5",
                   onClick: (String numero) {
-                    print("Main: $numero");
+                    _ctrlDisplay.text = "${_ctrlDisplay.text}5";
                   },
                 ),
                 BtnLight(
                   numero: "6",
                   onClick: (String numero) {
-                    print("Main: $numero");
+                    _ctrlDisplay.text = "${_ctrlDisplay.text}6";
+                  },
+                ),
+                BtnDark(
+                  simbolo: "-",
+                  onClick: () {
+                    setAux1("-");
                   },
                 ),
               ],
@@ -104,19 +179,48 @@ class _MyHomePageState extends State<MyHomePage> {
                 BtnLight(
                   numero: "7",
                   onClick: (String numero) {
-                    print("Main: $numero");
+                    _ctrlDisplay.text = "${_ctrlDisplay.text}7";
                   },
                 ),
                 BtnLight(
                   numero: "8",
                   onClick: (String numero) {
-                    print("Main: $numero");
+                    _ctrlDisplay.text = "${_ctrlDisplay.text}8";
                   },
                 ),
                 BtnLight(
                   numero: "9",
                   onClick: (String numero) {
-                    print("Main: $numero");
+                    _ctrlDisplay.text = "${_ctrlDisplay.text}9";
+                  },
+                ),
+                BtnDark(
+                  simbolo: "*",
+                  onClick: () {
+                    setAux1("*");
+                  },
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                BtnLight(
+                  numero: "0",
+                  onClick: (String numero) {
+                    _ctrlDisplay.text = "${_ctrlDisplay.text}0";
+                  },
+                ),
+                BtnDark(
+                  simbolo: "=",
+                  onClick: () {
+                    setAux2();
+                    calcular();
+                  },
+                ),
+                BtnDark(
+                  simbolo: "/",
+                  onClick: () {
+                    setAux1("/");
                   },
                 ),
               ],
@@ -125,9 +229,9 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+        onPressed: () {},
+        tooltip: 'Reset',
+        child: const Icon(Icons.refresh),
       ),
     );
   }

@@ -9,25 +9,41 @@ class BtnLight extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
-        print("Click $numero");
         this.onClick(this.numero);
       },
-      child: Text(this.numero, style: TextStyle(fontSize: 34, color: Colors.white)),
-      style: ButtonStyle(backgroundColor: WidgetStateProperty.all(const Color.fromARGB(255, 173, 232, 221))),
+      child: Text(
+        this.numero,
+        style: TextStyle(fontSize: 34, color: Colors.white),
+      ),
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all(
+          const Color.fromARGB(255, 173, 232, 221),
+        ),
+      ),
     );
   }
 }
 
 class BtnDark extends StatelessWidget {
   final String simbolo;
-  const BtnDark({super.key, required this.simbolo});
+  final VoidCallback?
+  onClick; // Agregado para permitir la funcionalidad de click en cada botón
+
+  const BtnDark({super.key, required this.simbolo, this.onClick});
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () {},
-      child: Text(this.simbolo, style: TextStyle(fontSize: 24, color: Colors.white)),
-      style: ButtonStyle(backgroundColor: WidgetStateProperty.all(const Color.fromARGB(255, 11, 102, 97))),
+      onPressed: onClick,
+      child: Text(
+        this.simbolo,
+        style: TextStyle(fontSize: 24, color: Colors.white),
+      ),
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all(
+          const Color.fromARGB(255, 11, 102, 97),
+        ),
+      ),
     );
   }
 }
